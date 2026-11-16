@@ -98,6 +98,23 @@ Print["         C_self(1) = ", N[cSelf*10^12, 6], " pF"];
 Print["         C_mutual(1,2) = ", N[cMutual*10^12, 6], " pF"];
 check["row sum consistency (Q for V={1,0,0})", cMat[[1, 1]] + cMat[[1, 2]] + cMat[[1, 3]], cSelf, 1.*10^-18];
 
+(* ================= E. 概率：超差概率 ================= *)
+Print[""];
+Print["[E] probability of exceeding class 0.2"];
+(*  设比值差 eps ~ N(mu, sigma^2)，限值 a。
+    mu = 0 时 P = 2 Phi(-a/sigma)。
+    注意：sigma 未实测，本段只复算报告表 1 的数值，不主张某一 sigma 成立。     *)
+a = 0.2;
+prob[a_, s_] := 2*CDF[NormalDistribution[0, 1], -a/s];
+check["sigma=0.05 -> P", prob[0.2, 0.05], 6.3*10^-5, 1.*10^-6];
+check["sigma=0.10 -> P", prob[0.2, 0.10], 0.046, 5.*10^-4];
+check["sigma=0.20 -> P", prob[0.2, 0.20], 0.317, 5.*10^-4];
+(* mu 已在校正前处于 1% 量级时，超差近乎必然 *)
+pMu = 1 - (CDF[NormalDistribution[0, 1], (a - 1.0)/0.1] -
+           CDF[NormalDistribution[0, 1], (-a - 1.0)/0.1]);
+check["mu=1.0%, sigma=0.1% -> P", pMu, 1.0, 1.*10^-9];
+Print["         -> 校正前超差是必然事件，故「校正先于控制离散」"];
+
 Print[""];
 Print["---- ", pass, " passed, ", fail, " failed ----"];
 If[fail > 0, Exit[1]];
