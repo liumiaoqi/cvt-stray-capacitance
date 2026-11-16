@@ -115,6 +115,25 @@ pMu = 1 - (CDF[NormalDistribution[0, 1], (a - 1.0)/0.1] -
 check["mu=1.0%, sigma=0.1% -> P", pMu, 1.0, 1.*10^-9];
 Print["         -> 校正前超差是必然事件，故「校正先于控制离散」"];
 
+(* ================= F. 切比雪夫上界（报告表 2） ================= *)
+Print[""];
+Print["[F] Chebyshev bound, table 2"];
+(*  P(|eps - mu| >= k sigma) <= 1/k^2，k = a/sigma。
+    这一条是定理，不是待验证的猜想；此处核的是表 2 每一格与该式一致，
+    以及反向解出的 sigma 上限。                                              *)
+cheb[a_, s_] := (s/a)^2;      (* 即 1/k^2 *)
+check["sigma=0.05 -> 1/k^2", cheb[0.2, 0.05], 0.0625, 1.*10^-12];
+check["sigma=0.10 -> 1/k^2", cheb[0.2, 0.10], 0.2500, 1.*10^-12];
+check["sigma=0.20 -> 1/k^2", cheb[0.2, 0.20], 1.0000, 1.*10^-12];
+
+(* 反向：要保证 P <= 5%，需 k >= sqrt(20)，故 sigma <= a/sqrt(20) *)
+sigMax = 0.2/Sqrt[20.];
+check["sigma max for P<=5% (%)", sigMax, 0.0447214, 1.*10^-6];
+check["sigma max / a", sigMax/0.2, 1/Sqrt[20.], 1.*10^-12];
+Print["         正态在该 sigma 处给 P = ", N[prob[0.2, sigMax], 8],
+      "  （切比雪夫只保证 <= 5%，相差约 ",
+      N[0.05/prob[0.2, sigMax], 4], " 倍）"];
+
 Print[""];
 Print["---- ", pass, " passed, ", fail, " failed ----"];
 If[fail > 0, Exit[1]];
