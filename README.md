@@ -156,5 +156,7 @@ wolframscript -file derivations.wls           # 温度、频率、能量法、�
 
 ## 五、许可
 
-MIT，见 `LICENSE`。欢迎指出推导错误——本仓的价值全在可核对。
+[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)，全文见 `LICENSE`。复制、改编、再分发均可，注明作者与来源即可。
+
+欢迎指出推导错误——本仓的价值全在可核对。
 
